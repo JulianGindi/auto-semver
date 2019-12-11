@@ -41,10 +41,12 @@ def parse_semver_tags(raw_semver_text):
     return semver_result_output
 
 
-def get_remote_git_tags():
+def get_remote_git_tags(remote):
     # Git command to list remote tags, only grabbing tags and not the
     # commit hashes.
-    tag_command = "git ls-remote --tags -q | awk '{print $2}'"
+    tag_command = "git ls-remote --tags -q {} | awk '{{print $2}}'".format(
+        remote
+    )
 
     command_output = subprocess.run(
         tag_command,
@@ -108,12 +110,12 @@ def increment_specified_semver_number(semver, value_to_increment):
     return semver
 
 
-def auto_increment_semver_tags(value_to_increment):
-    remote_tag_text = get_remote_git_tags()
+def auto_increment_semver_tags(args):
+    remote_tag_text = get_remote_git_tags(args.remote)
     tag_list = parse_semver_tags(remote_tag_text)
     highest_tag = get_highest_tag_from_list(tag_list)
     auto_incremented_tag = increment_specified_semver_number(
-        highest_tag, value_to_increment
+        highest_tag, args.highest_value
     )
     print(auto_incremented_tag["semver"])
 
@@ -127,8 +129,17 @@ if __name__ == "__main__":
         "--highest-value",
         type=str,
         default="patch",
+        required=False,
         help="The highest value (minor or patch) to auto-increment",
     )
 
+    parser.add_argument(
+        "--remote",
+        type=str,
+        default="",
+        required=False,
+        help="A specific git origin to pull tags from",
+    )
+
     args = parser.parse_args()
-    auto_increment_semver_tags(args.highest_value)
+    auto_increment_semver_tags(args)
