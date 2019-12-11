@@ -1,0 +1,102 @@
+# pylint: disable=anomalous-backslash-in-string
+import re
+import subprocess
+import sys
+
+
+def parse_semver_tags(raw_semver_text):
+    semver_result_output = []
+    regex_string = (
+        "^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|"
+        "[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-]"
+        "[0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*"
+        "))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*)"
+        ")?$"
+    )
+
+    # Compiling regex to speed up matching during loop below.
+    regex = re.compile(regex_string)
+
+    for line in raw_semver_text.splitlines():
+        # Removing the fixed part of the git tag output we won't need.
+        line_cleaned = line.replace("refs/tags/", "")
+        match = regex.match(line_cleaned)
+
+        # Splitting up the matched results into their coresponding
+        # regex match groups which will make our lives much easier.
+        major, minor, patch, prerelease, buildmetadata = match.groups()
+
+        # Creating a new entry containing all the resulting match data.
+        semver_entry = {
+            "semver": match.group(),
+            "major": major,
+            "minor": minor,
+            "patch": patch,
+            "prerelease": prerelease,
+            "buildmetadata": buildmetadata,
+        }
+        semver_result_output.append(semver_entry)
+
+    return semver_result_output
+
+
+def get_remote_git_tags():
+    # Git command to list remote tags, only grabbing tags and not the
+    # commit hashes.
+    tag_command = "git ls-remote --tags -q | awk '{print $2}'"
+
+    command_output = subprocess.run(
+        tag_command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+
+    # Checking to make sure our command succeeded. The stdout() function
+    # returns None if the command fails and there is no output.
+    if command_output.stderr is not "":
+        sys.exit("Error getting tags from remote")
+    elif command_output.stdout is "":
+        # There are no returned tags, writing a message to stdout and exiting.
+        print("No tags found. Nothing to do.")
+        sys.exit(0)
+
+    return command_output.stdout
+
+
+def get_highest_tag_from_list(tag_list):
+    # We will start our comparisons with the first tag in the list.
+    current_highest_tag = tag_list[0]
+
+    for tag in tag_list[1:]:
+        if tag["major"] > current_highest_tag["major"]:
+            current_highest_tag = tag
+        elif tag["major"] < current_highest_tag["major"]:
+            continue
+        elif tag["major"] == current_highest_tag["major"]:
+            # Now we search through the minor versions
+            if tag["minor"] > current_highest_tag["minor"]:
+                current_highest_tag = tag
+            elif tag["minor"] < current_highest_tag["minor"]:
+                continue
+            elif tag["minor"] == current_highest_tag["minor"]:
+                if tag["patch"] > current_highest_tag["patch"]:
+                    current_highest_tag = tag
+                elif tag["patch"] < current_highest_tag["patch"]:
+                    continue
+                elif tag["patch"] == current_highest_tag["patch"]:
+                    # Values are identitcal, not sure how this happened.
+                    continue
+
+    return current_highest_tag
+
+
+def auto_increment_semver_tags():
+    remote_tag_text = get_remote_git_tags()
+    tag_list = parse_semver_tags(remote_tag_text)
+    highest_tag = get_highest_tag_from_list(tag_list)
+
+
+if __name__ == "__main__":
+    auto_increment_semver_tags()
