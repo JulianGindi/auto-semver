@@ -62,9 +62,9 @@ class TestAutoSemver(unittest.TestCase):
         self.semver_list_patch = [
             {
                 "semver": "1.6.23",
-                "major": "2",
-                "minor": "1",
-                "patch": "0",
+                "major": "1",
+                "minor": "6",
+                "patch": "23",
                 "prerelease": None,
                 "buildmetadata": None,
             },
@@ -90,21 +90,51 @@ class TestAutoSemver(unittest.TestCase):
         expected_highest = "0.6.3"
         self.assertEqual(
             expected_highest,
-            auto_semver.get_highest_tag_from_list(self.semver_list_minor)["semver"],
+            auto_semver.get_highest_tag_from_list(self.semver_list_minor)[
+                "semver"
+            ],
         )
 
     def test_get_highest_semver_major_comparison(self):
         expected_highest = "2.1.0"
         self.assertEqual(
             expected_highest,
-            auto_semver.get_highest_tag_from_list(self.semver_list_major)["semver"],
+            auto_semver.get_highest_tag_from_list(self.semver_list_major)[
+                "semver"
+            ],
         )
 
     def test_get_highest_semver_patch_comparison(self):
         expected_highest = "1.6.23"
         self.assertEqual(
             expected_highest,
-            auto_semver.get_highest_tag_from_list(self.semver_list_patch)["semver"],
+            auto_semver.get_highest_tag_from_list(self.semver_list_patch)[
+                "semver"
+            ],
+        )
+
+    def test_auto_increment_patch_version(self):
+        expected_end_result = "1.6.24"
+        highest_semver = auto_semver.get_highest_tag_from_list(
+            self.semver_list_patch
+        )
+        self.assertEqual(
+            expected_end_result,
+            auto_semver.increment_specified_semver_number(
+                highest_semver, "patch"
+            )["semver"],
+        )
+
+    def test_auto_increment_minor_version(self):
+        expected_end_result = "0.7.0"
+        highest_semver = auto_semver.get_highest_tag_from_list(
+            self.semver_list_minor
+        )
+        self.assertEqual(
+            expected_end_result,
+            auto_semver.increment_specified_semver_number(
+                highest_semver, "minor"
+            )["semver"],
         )
 
 
