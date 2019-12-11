@@ -86,6 +86,33 @@ class TestAutoSemver(unittest.TestCase):
             },
         ]
 
+        self.semver_list_prerelease = [
+            {
+                "semver": "0.1.0",
+                "major": "0",
+                "minor": "1",
+                "patch": "0",
+                "prerelease": None,
+                "buildmetadata": None,
+            },
+            {
+                "semver": "0.6.3",
+                "major": "0",
+                "minor": "6",
+                "patch": "3",
+                "prerelease": "alpha",
+                "buildmetadata": None,
+            },
+            {
+                "semver": "0.3.65",
+                "major": "0",
+                "minor": "3",
+                "patch": "65",
+                "prerelease": "0.3.7",
+                "buildmetadata": None,
+            },
+        ]
+
     def test_get_highest_semver_minor_comparison(self):
         expected_highest = "0.6.3"
         self.assertEqual(
@@ -121,7 +148,7 @@ class TestAutoSemver(unittest.TestCase):
         self.assertEqual(
             expected_end_result,
             auto_semver.increment_specified_semver_number(
-                highest_semver, "patch"
+                highest_semver, "patch", False
             )["semver"],
         )
 
@@ -133,7 +160,31 @@ class TestAutoSemver(unittest.TestCase):
         self.assertEqual(
             expected_end_result,
             auto_semver.increment_specified_semver_number(
-                highest_semver, "minor"
+                highest_semver, "minor", False
+            )["semver"],
+        )
+
+    def test_auto_increment_path_version_retain_prerelease(self):
+        expected_end_result = "0.6.4-alpha"
+        highest_semver = auto_semver.get_highest_tag_from_list(
+            self.semver_list_prerelease
+        )
+        self.assertEqual(
+            expected_end_result,
+            auto_semver.increment_specified_semver_number(
+                highest_semver, "patch", True
+            )["semver"],
+        )
+
+    def test_auto_increment_path_version_do_not_retain_prerelease(self):
+        expected_end_result = "0.6.4"
+        highest_semver = auto_semver.get_highest_tag_from_list(
+            self.semver_list_prerelease
+        )
+        self.assertEqual(
+            expected_end_result,
+            auto_semver.increment_specified_semver_number(
+                highest_semver, "patch", False
             )["semver"],
         )
 

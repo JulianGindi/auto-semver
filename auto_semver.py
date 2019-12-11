@@ -101,7 +101,9 @@ def get_highest_tag_from_list(tag_list):
     return current_highest_tag
 
 
-def increment_specified_semver_number(semver, value_to_increment):
+def increment_specified_semver_number(
+    semver, value_to_increment, preserve_prerelease
+):
     semver_part_as_int = int(semver[value_to_increment])
     semver[value_to_increment] = str(semver_part_as_int + 1)
 
@@ -112,6 +114,10 @@ def increment_specified_semver_number(semver, value_to_increment):
     semver["semver"] = "{}.{}.{}".format(
         semver["major"], semver["minor"], semver["patch"]
     )
+    if preserve_prerelease:
+        semver["semver"] = "{}-{}".format(
+            semver["semver"], semver["prerelease"]
+        )
 
     return semver
 
