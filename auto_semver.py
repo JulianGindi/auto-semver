@@ -114,7 +114,7 @@ def increment_specified_semver_number(
     semver["semver"] = "{}.{}.{}".format(
         semver["major"], semver["minor"], semver["patch"]
     )
-    if preserve_prerelease:
+    if preserve_prerelease and semver["prerelease"] is not None:
         semver["semver"] = "{}-{}".format(
             semver["semver"], semver["prerelease"]
         )
@@ -127,7 +127,7 @@ def auto_increment_semver_tags(args):
     tag_list = parse_semver_tags(remote_tag_text)
     highest_tag = get_highest_tag_from_list(tag_list)
     auto_incremented_tag = increment_specified_semver_number(
-        highest_tag, args.highest_value
+        highest_tag, args.highest_value, args.preserve_prerelease
     )
     print(auto_incremented_tag["semver"])
 
@@ -151,6 +151,14 @@ if __name__ == "__main__":
         default="",
         required=False,
         help="A specific git origin to pull tags from",
+    )
+
+    parser.add_argument(
+        "--preserve-prerelease",
+        type=bool,
+        default=False,
+        required=False,
+        help="Should the prerelease data be added after specified build number is incremented",
     )
 
     args = parser.parse_args()
