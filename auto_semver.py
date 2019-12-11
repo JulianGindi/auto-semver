@@ -7,6 +7,8 @@ import sys
 
 def parse_semver_tags(raw_semver_text):
     semver_result_output = []
+    # This is a wild regex, but it comes directly from the semver docs.
+    # More here: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     regex_string = (
         "^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|"
         "[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-]"
