@@ -23,6 +23,10 @@ def parse_semver_tags(raw_semver_text):
         line_cleaned = line.replace("refs/tags/", "")
         match = regex.match(line_cleaned)
 
+        # We don't do anything if we don't have a valid semver
+        if match is None:
+            continue
+
         # Splitting up the matched results into their coresponding
         # regex match groups which will make our lives much easier.
         major, minor, patch, prerelease, buildmetadata = match.groups()
