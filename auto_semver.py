@@ -121,7 +121,7 @@ def auto_increment_semver_tags(args):
     tag_list = parse_semver_tags(remote_tag_text)
     highest_tag = get_highest_tag_from_list(tag_list)
     auto_incremented_tag = increment_specified_semver_number(
-        highest_tag, args.highest_value
+        highest_tag, args.value
     )
     print(auto_incremented_tag["semver"])
 
