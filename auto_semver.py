@@ -119,7 +119,18 @@ def increment_specified_semver_number(semver, value_to_increment):
 def auto_increment_semver_tags(args):
     remote_tag_text = get_remote_git_tags(args.remote)
     tag_list = parse_semver_tags(remote_tag_text)
+
+    # If we don't get any parsed tags back, we will print out an initial version.
+    if len(tag_list) == 0:
+        print("0.1.0")
+        return
+
     highest_tag = get_highest_tag_from_list(tag_list)
+
+    if args.print_highest is True:
+        print(highest_tag["semver"])
+        return
+
     auto_incremented_tag = increment_specified_semver_number(
         highest_tag, args.value
     )
@@ -146,6 +157,15 @@ if __name__ == "__main__":
         default="",
         required=False,
         help="A specific git origin to pull tags from",
+    )
+
+    parser.add_argument(
+        "--print-highest",
+        dest="print_highest",
+        action="store_true",
+        default=False,
+        required=False,
+        help="Should the script just print the highest semver value without auto-incrementing?",
     )
 
     args = parser.parse_args()
