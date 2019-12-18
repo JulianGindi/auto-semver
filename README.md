@@ -1,5 +1,7 @@
 # Auto Increment Semver
 
+![img](https://upload.wikimedia.org/wikipedia/commons/8/82/Semver.jpg)
+
 A portable python script that auto increments a semver tag for you based on remote git tags.
 
 ## Usage
@@ -14,4 +16,8 @@ Specifying a specific remote.
 
 Auto-incrementing a minor version
 
-`python auto_semver.py --highest-value minor`
+`python auto_semver.py --value minor`
+
+Just print out the current highest git semver tag
+
+`python auto_semver.py --print-highest`
