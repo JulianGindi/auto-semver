@@ -1,11 +1,11 @@
 python_requirements:
-	pip install twine
+	pip3 install twine
 
 test:
-	python test_auto_semver.py
+	python3 test_auto_semver.py
 
 package:
-	python setup.py sdist bdist_wheel
+	python3 setup.py sdist bdist_wheel
 
 publish: python_requirements package
 	twine upload dist/*
