@@ -1,13 +1,24 @@
-name: CI
-
+name: Tests
 on: [push]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
     - name: Run python tests
-      run: python test_auto_semver.py
+      run: make test
+
+name: Publishing
+on: [release]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run python tests
+      run: make test
+    - name: Package and publish code
+      run: make publish
+      env:
+        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
