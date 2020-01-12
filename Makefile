@@ -1,11 +1,14 @@
 python_requirements:
-	pip3 install twine
+	pip install twine
+
+test:
+	python test_auto_semver.py
 
 package:
-	python3 setup.py sdist bdist_wheel
+	python setup.py sdist bdist_wheel
 
 publish: python_requirements package
 	twine upload dist/*
 
 clean:
-	rm -rf dist/ __pycache__/ *.egg-info/
+	rm -rf dist/ build/ __pycache__/ *.egg-info/
