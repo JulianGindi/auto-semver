@@ -2,7 +2,7 @@
 
 ![img](https://upload.wikimedia.org/wikipedia/commons/8/82/Semver.jpg)
 
-A portable python script that aims let you focus on writing software, while it versions it for you. Strictly follows [Semver](https://semver.org/) using [Git tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging).
+A small python tool that aims to let you focus on writing software, while it versions it for you. Strictly follows [Semver](https://semver.org/) using [Git tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging) (more flexible support coming soon).
 
 ## Install
 
