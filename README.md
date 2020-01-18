@@ -10,18 +10,18 @@ A small python tool that aims to let you focus on writing software, while it ver
 
 ## Usage
 
-Running from within a git directory.
+Run from within a git directory, will print the next Semver value to use by incrementing the patch number.
 
 `auto-semver`
 
-Specifying a specific remote.
+Specifying a specific git remote.
 
 `auto-semver --remote git@github.com:JulianGindi/auto-increment-semver.git`
 
-Auto-incrementing a minor version
+Auto-incrementing a minor version.
 
 `auto-semver --value minor`
 
-Just print out the current highest git semver tag
+Just print out the current highest git semver tag.
 
 `auto-semver --print-highest`
