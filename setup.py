@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="auto-semver",
-    version="0.6.1",
+    version="0.7.0",
     description="Semver swiss-army knife",
     url="http://github.com/juliangindi/auto-semver",
     author="Julian Gindi",
