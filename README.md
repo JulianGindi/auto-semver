@@ -14,6 +14,10 @@ Run from within a git directory, will print the next Semver value to use by incr
 
 `auto-semver`
 
+Run using local git tags (not from a remote).
+
+`auto-semver --use-local`
+
 Specifying a specific git remote.
 
 `auto-semver --remote git@github.com:JulianGindi/auto-increment-semver.git`
