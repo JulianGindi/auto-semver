@@ -33,3 +33,9 @@ Just print out the current highest git semver tag.
 You can also have auto-semver create a git tag for you locally by running a `git tag` command.
 
 `auto-semver -t`
+
+## Auto Semver Replacer
+
+You can have auto-semver automatically find and update a single "simple" semver (x.x.xx) value in a file you specify. This works great for files like Python's `setup.py` or Helm's `Chart.yaml`. Here is an example of updating a minor value in the file `setup.py`: 
+
+`auto-semver --value minor -f setup.py`
